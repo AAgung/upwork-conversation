@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family:'Open Sans',sans-serif;
+}
+h2 {
+    font-size: 24px;
+}
+p {
+    font-size: 1.5rem;
+    padding: 0.2rem;
+    
+    font-weight: 400;
+}
+.personOne {
+    font-size: 2rem;
+    margin: 0;
+    font-weight: 700;
+}
+.sentence {
+    font-size: 2rem;
+    font-weight: 700;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+.lesson-titles {
+}
+
+.dropdown-answers {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border: 2px solid gray;   
+}
+.sentence span{
+    margin-right: 4px;
+}
+#check-answers {
+    margin-top: 0.5rem;
+}
+.check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    margin: auto;
+    margin: 0 3vw;
+}
+
+select {
+    font-size: 1.5rem;
+    margin: 0 0.3rem;
+}
+.text-center {
+    text-align: center;
+}
+button {
+    color: white;
+    font-size: 1.5rem;
+    padding: .5rem 1rem;
+    border: none;
+    border-radius: .2rem;
+}
+#message {
+    margin-left: 1rem;
+    font-weight: 700;
+}
+.green {
+    background-color: #4CAF50;
+
+}
+.blue {
+    background-color: DodgerBlue;
+
+}
+.gray {
+    background-color: #616161;
+
+}
+.playerContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: .5rem;
+}
+.playerWrapper {
+    display: grid;
+    grid-template-columns: auto auto;
+    
+    background-color: rgba(30, 143, 255, 0.233);
+    width: 80vw;
+    border-radius: .5rem;
+}
+.playerAB {
+    display: grid;
+    grid-template-columns: auto auto;
+
+}
+.horizontal {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding: 0 3rem;
+    
+}
+img {
+    cursor: pointer;
+    margin-left: .5rem;
+}
+
+
+</style>
+</head>
+<body>
+      <script>
+        let audioBothParts = new Array(
+            {
+                file: 'audio/U1_C_L1.mp3',
+                text: `A. Hello.`,
+            },
+            {
+                file: 'audio/U1_C_L2.mp3',
+                text: `B. Hi. How's it going?`,
+            },
+            {
+                file: 'audio/U1_C_L3.mp3',
+                text: `A. Pretty good. And you?`,
+            },
+            {
+                file: 'audio/U1_C_L4.mp3',
+                text: `B. Not bad.`,
+            },
+            {
+                file: 'audio/U1_C_L5.mp3',
+                text: `A. Hey, who's that girl over there?`,
+            },
+            {
+                file: 'audio/U1_C_L6.mp3',
+                text: `B. Oh, that's my friend Laura.`,
+            },
+            {
+                file: 'audio/U1_C_L7.mp3',
+                text: `A. Where's she from?`,
+            },
+            {
+                file: 'audio/U1_C_L8.mp3',
+                text: `B. She's from Mexico.`,
+            },
+        );
+
+        function disablePlayButton(disabled) {
+            let divPlayWrapper = document.getElementById('div-player_wrapper');
+            divPlayWrapper.style.opacity = '50%';
+            if(!disabled) divPlayWrapper.style.opacity = '100%';
+
+            let divPlaySound = document.querySelectorAll('.div-play_sound');
+            for(el of divPlaySound) {
+                el.disabled = disabled;
+            }
+        }
+
+        function playAudio(mode, keyAudio) {
+            if(!document.querySelector('#div-listen_both_parts').disabled) {
+                disablePlayButton(true);
+                keyAudio++;
+                let audio = new Audio(audioBothParts[keyAudio].file);
+                let textAudio = document.getElementById(`text-audio-${keyAudio}`);
+                
+                textAudio.style.fontWeight = 'bold';
+                textAudio.style.color = 'blue';
+                if(keyAudio == audioBothParts.length) return;
+                audio.addEventListener('ended', async () => {
+                    disablePlayButton(false);
+                    textAudio.style.color = '#000';
+                    audio.currentTime = 0;
+                    audio.muted = false;
+                    await setTimeout(() => {
+                        console.log('wait for 1200ms');
+                    }, 1200);
+                    if(keyAudio < (audioBothParts.length - 1)) await playAudio(mode, keyAudio);
+                });
+    
+                switch(mode) {
+                    case 'part-a':
+                        if((keyAudio + 1) % 2 == 1) {
+                            textAudio.style.color = '#fc0b03';
+                            audio.muted = true;
+                        } 
+                        break;
+                    case 'part-b':
+                        if((keyAudio + 1) % 2 == 0) {
+                            textAudio.style.color = '#fc0b03';
+                            audio.muted = true;
+                        } 
+                        break;
+                }
+                audio.play();
+            }
+        } 
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            function generateTextAudio() {
+                let divTextAudio = document.querySelector('#div-text_audio');
+                for(const [i, v] of audioBothParts.entries()) {
+                    var text = document.createElement("p");
+                    text.setAttribute('id', `text-audio-${i}`);
+                    text.innerHTML = v.text;
+                    divTextAudio.appendChild(text);
+                }
+            }
+            generateTextAudio();
+        });
+      </script>
+<!-- partial:index.partial.html -->
+<div class="playerContainer">
+    <div id="div-player_wrapper" class="playerWrapper">
+        <div class="horizontal">
+            <p>Listen to both parts:</p>
+            <div id="div-listen_both_parts" class="div-play_sound" onclick="playAudio('both-parts', -1)">
+                <img src="play.svg" width="28" alt="">
+            </div>
+        </div>
+        <div class="playerAB">
+            <div id="div-listen_part_a" onclick="playAudio('part-a', -1)" class="horizontal div-play_sound">
+                <p>Part A:</p>
+                <img id="" src="play.svg" width="28" alt="">
+            </div>
+            <div id="div-listen_part_b" onclick="playAudio('part-b', -1)" class="horizontal div-play_sound">
+                <p>Part B:</p>
+                <img src="play.svg" width="28" alt="">
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="container">
+        <div class="row lesson-titles">
+            <p id="demo" class="col-md-12 col-lg-12 text-center">Topic: <strong style="color: DodgerBlue">Conversation</strong> </p>
+            <div id="div-text_audio"></div>
+            <!-- <p class="personOne">A. Hello.</p>
+            <p class="personOne">B. Hi. How's it going?</p>
+            <p class="personOne">A. Pretty good. And you?</p>
+
+            <p class="personOne">B. Not bad.</p>
+            <p class="personOne">A. Hey, who's that girl over there?</p>
+            <p class="personOne">B. Oh, that's my friend Laura.</p>
+            <p class="personOne">A. Where's she from?</p>
+            <p class="personOne">B. She's from Mexico.</p> -->
+
+        </div>
+       
+    </div>
+
+
+</body>
+</html>
